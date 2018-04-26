@@ -125,7 +125,7 @@ namespace PayoutTester
 
         static decimal GenerateBet()
         {
-            return (decimal)Math.Round((random.NextDouble() * (MAX - MIN) + MIN), 2, MidpointRounding.AwayFromZero);
+            return (decimal)Math.Round((random.NextDouble() * (MAX - MIN) + MIN), 0, MidpointRounding.AwayFromZero);
         }
 
         static void PrintHeader()
