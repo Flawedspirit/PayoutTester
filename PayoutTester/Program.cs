@@ -1,22 +1,33 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace PayoutTester
 {
     class Program
     {
-        //Constants
-        const String VERSION = "v1.0";
-        const double MIN = 2.00;
-        const double MAX = 100.00;
+        //Version info
+        private static String asm = Assembly.GetExecutingAssembly().Location;
+        private static FileVersionInfo fv = FileVersionInfo.GetVersionInfo(asm);
+
+        public static String VERSION = String.Format("v{0}", fv.FileVersion.ToString());
+
+        //Program Flags
+        public static bool flagEasyMode = false;
+        public static bool flagWillPass = false;
+        public static double flagMin = 2.00;
+        public static double flagMax = 100.00;
 
         //Running Variables
-        static int headerState = 0;
+        public static int headerState = 0;
 
         //Objects
         static Random random = new Random();
 
         static void Main(string[] args)
         {
+            ArgumentHelper.ParseArguments(args);
+
             decimal thisBet = GenerateBet();
             decimal payout = 0;
             decimal entry = 0;
@@ -26,20 +37,20 @@ namespace PayoutTester
             bool wasCorrect = false;
 
             //0 = blackjack; 1 = mixed pair; 2 = coloured pair; 3 = perfect pair
-            int payoutType = random.Next(4);
+            int payoutType = random.Next(3) + 1; //Offset to ensure the right range is generated
 
             while (running)
             {
                 Console.Clear();
 
-                PrintHeader();
+                InterfaceHelper.PrintHeader();
 
                 if(wasCorrect)
                 {
                     //If the last round was correct, generate new values
                     // If not, re-use the same until it's right
                     thisBet = GenerateBet();
-                    payoutType = random.Next(4);
+                    payoutType = random.Next(3) + 1; //Offset to ensure the right range is generated
                 }
                 
                 switch (payoutType)
@@ -76,7 +87,7 @@ namespace PayoutTester
                 {
                     if(ex is FormatException || ex is ArgumentNullException)
                     {
-                        WriteLine("[!] Please enter a valid number. Press any key to try again.", ConsoleColor.Red);
+                        InterfaceHelper.WriteLine("[!] Please enter a valid number. Press any key to try again.", ConsoleColor.Red);
                         wasCorrect = false;
                     }
 
@@ -88,80 +99,35 @@ namespace PayoutTester
 
                 if (entry < 0.00M)
                 {
-                    WriteLine("[!] Please enter a positive number. Press any key to try again.", ConsoleColor.Red);
+                    InterfaceHelper.WriteLine("[!] Please enter a positive number. Press any key to try again.", ConsoleColor.Red);
                     wasCorrect = false;
                 }
 
                 if(Decimal.Compare(payout, entry) == 0)
                 {
-                    WriteLine("[\u221a] Correct! Press any key to do another one.", ConsoleColor.Green);
+                    InterfaceHelper.WriteLine("[\u221a] Correct! Press any key to do another one.", ConsoleColor.Green);
 
                     wasCorrect = true;
                 } else
                 {
-                    WriteLine("[x]That was not correct. Press any key to try again.", ConsoleColor.Red);
-                    wasCorrect = false;
+                    InterfaceHelper.WriteLine("[x]That was not correct. Press any key to try again.", ConsoleColor.Red);
+
+                    wasCorrect = flagWillPass;
                 }
 
                 Console.ReadKey();
             }
         }
 
-        static void WriteLine(String print, ConsoleColor color = ConsoleColor.White)
-        {
-            ConsoleColor prevColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.WriteLine(print);
-            Console.ForegroundColor = prevColor;
-        }
-
-        static void Write(String print, ConsoleColor color = ConsoleColor.White)
-        {
-            ConsoleColor prevColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.Write(print);
-            Console.ForegroundColor = prevColor;
-        }
-
         static decimal GenerateBet()
         {
-            return (decimal)Math.Round((random.NextDouble() * (MAX - MIN) + MIN), 0, MidpointRounding.AwayFromZero);
+            decimal randomBet = (decimal)(random.NextDouble() * (flagMax - flagMin) + flagMin);
+
+            //Return only numbers divisible by 5 when easymode flag is set
+            //Otherwise, any number in the range is fair game
+            return Math.Ceiling((flagEasyMode) ? Math.Max(5 * Math.Floor(Math.Round(randomBet / 5)), 5) : randomBet);
         }
 
-        static void PrintHeader()
-        {
-            for (int i = 0; i < Console.WindowWidth; i++)
-            {
-                Console.SetCursorPosition(i, headerState);
-                Console.WriteLine("#");
-            }
 
-            headerState++;
-
-            if(headerState < 2)
-            {
-                Console.SetCursorPosition(0, 1);
-                Console.Write("#");
-
-                Console.SetCursorPosition(2, 1);
-                Write("Payout Tester by Marc Chiarelli (c) " + DateTime.Now.Year, ConsoleColor.DarkCyan);
-
-                Console.SetCursorPosition(Console.WindowWidth - ((VERSION.Length * 2) -1), 1);
-                Write(VERSION, ConsoleColor.DarkGray);
-                Console.ForegroundColor = ConsoleColor.White;
-
-                Console.SetCursorPosition(Console.WindowWidth - 1, 1);
-                Console.Write("#");
-
-                headerState++;
-            } else
-            {
-                Console.SetCursorPosition(0, headerState + 1);
-                return;
-            }
-
-            PrintHeader();
-            headerState = 0;
-        }
     }
 }
