@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Linq;
 
 namespace PayoutTester
 {
     class InterfaceHelper
     {
-        public static void WriteLine(String print, ConsoleColor color = ConsoleColor.White)
+        public static void WriteLine(string print, ConsoleColor color = ConsoleColor.White)
         {
             ConsoleColor prevColor = Console.ForegroundColor;
             Console.ForegroundColor = color;
@@ -12,7 +13,7 @@ namespace PayoutTester
             Console.ForegroundColor = prevColor;
         }
 
-        public static void Write(String print, ConsoleColor color = ConsoleColor.White)
+        public static void Write(string print, ConsoleColor color = ConsoleColor.White)
         {
             ConsoleColor prevColor = Console.ForegroundColor;
             Console.ForegroundColor = color;
@@ -55,6 +56,22 @@ namespace PayoutTester
 
             PrintHeader();
             Program.headerState = 0;
+        }
+
+        public static void PrintFooter()
+        {
+            string[] flags = new string[] {
+                (Program.flagDebug ? "[D]" : null),
+                (Program.flagEasyMode ? "[E]" : null),
+                (Program.flagWillPass ? "[P]" : null),
+                "[M:" + (Program.flagEasyMode ? "5" : Program.flagMin.ToString()) + "]",
+                "[X:" + Program.flagMax + "]"
+            };
+
+            string flagBuilder = String.Join(" ", flags.Where(s => !String.IsNullOrEmpty(s)));
+
+            Console.SetCursorPosition(0, Console.WindowHeight -2);
+            InterfaceHelper.WriteLine(String.Format("Flags: {0}", flagBuilder).TrimEnd(), ConsoleColor.DarkGray);
         }
     }
 }

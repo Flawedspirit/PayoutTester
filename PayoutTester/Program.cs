@@ -7,12 +7,13 @@ namespace PayoutTester
     class Program
     {
         //Version info
-        private static String asm = Assembly.GetExecutingAssembly().Location;
+        private static string asm = Assembly.GetExecutingAssembly().Location;
         private static FileVersionInfo fv = FileVersionInfo.GetVersionInfo(asm);
 
-        public static String VERSION = String.Format("v{0}", fv.FileVersion.ToString());
+        public static string VERSION = String.Format("v{0}", fv.FileVersion.ToString());
 
         //Program Flags
+        public static bool flagDebug = false;
         public static bool flagEasyMode = false;
         public static bool flagWillPass = false;
         public static double flagMin = 2.00;
@@ -44,6 +45,9 @@ namespace PayoutTester
                 Console.Clear();
 
                 InterfaceHelper.PrintHeader();
+                InterfaceHelper.PrintFooter();
+
+                Console.SetCursorPosition(0, 4);
 
                 if(wasCorrect)
                 {
@@ -74,7 +78,7 @@ namespace PayoutTester
                     //end case
                 }
 
-                Console.WriteLine(String.Format("${0} bet, paying out a {1}.", thisBet.ToString("N2"), payoutStr));
+                Console.WriteLine(String.Format("${0} bet, paying out a {1}. {2}", thisBet.ToString("N2"), payoutStr, (flagDebug) ? "Debug: " + payout : ""));
                 Console.WriteLine("");
 
                 Console.Write("Enter the expected payout: ");
