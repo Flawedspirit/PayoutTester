@@ -13,13 +13,15 @@ namespace PayoutTester
         public static string VERSION = String.Format("v{0}", fv.FileVersion.ToString());
 
         //Program Flags
+        public static bool flagSixToFive = false;
         public static bool flagDebug = false;
         public static bool flagEasyMode = false;
         public static bool flagWillPass = false;
+        public static int flagMode = 15;
         public static double flagMin = 2.00;
         public static double flagMax = 100.00;
 
-        //Running Variables
+        //Running State Variables
         public static int headerState = 0;
 
         //Objects
@@ -37,26 +39,24 @@ namespace PayoutTester
             bool running = true;
             bool wasCorrect = false;
 
-            //0 = blackjack; 1 = mixed pair; 2 = coloured pair; 3 = perfect pair
-            int payoutType = random.Next(3) + 1; //Offset to ensure the right range is generated
+            int payoutType = GeneratePayoutType();
 
             while (running)
             {
                 Console.Clear();
 
                 InterfaceHelper.PrintHeader();
-                InterfaceHelper.PrintFooter();
+
+                if (flagDebug) InterfaceHelper.PrintFooter();
 
                 Console.SetCursorPosition(0, 4);
 
-                if(wasCorrect)
+                if (wasCorrect)
                 {
-                    //If the last round was correct, generate new values
-                    // If not, re-use the same until it's right
                     thisBet = GenerateBet();
-                    payoutType = random.Next(3) + 1; //Offset to ensure the right range is generated
+                    payoutType = GeneratePayoutType();
                 }
-                
+
                 switch (payoutType)
                 {
                     case 0:
@@ -75,7 +75,7 @@ namespace PayoutTester
                         payout = thisBet * 25M;
                         payoutStr = "perfect pair (25:1)";
                         break;
-                    //end case
+                        //end case
                 }
 
                 Console.WriteLine(String.Format("${0} bet, paying out a {1}. {2}", thisBet.ToString("N2"), payoutStr, (flagDebug) ? "Debug: " + payout : ""));
@@ -89,7 +89,7 @@ namespace PayoutTester
                 }
                 catch (Exception ex)
                 {
-                    if(ex is FormatException || ex is ArgumentNullException)
+                    if (ex is FormatException || ex is ArgumentNullException)
                     {
                         InterfaceHelper.WriteLine("[!] Please enter a valid number. Press any key to try again.", ConsoleColor.Red);
                         wasCorrect = false;
@@ -107,12 +107,13 @@ namespace PayoutTester
                     wasCorrect = false;
                 }
 
-                if(Decimal.Compare(payout, entry) == 0)
+                if (Decimal.Compare(payout, entry) == 0)
                 {
                     InterfaceHelper.WriteLine("[\u221a] Correct! Press any key to do another one.", ConsoleColor.Green);
 
                     wasCorrect = true;
-                } else
+                }
+                else
                 {
                     InterfaceHelper.WriteLine("[x]That was not correct. Press any key to try again.", ConsoleColor.Red);
 
@@ -132,6 +133,28 @@ namespace PayoutTester
             return Math.Ceiling((flagEasyMode) ? Math.Max(5 * Math.Floor(Math.Round(randomBet / 5)), 5) : randomBet);
         }
 
+        static int GeneratePayoutType()
+        {
+            int genRange = 0;
 
+            if((flagMode & 0x4) >= 0x4)
+            {
+                genRange = 1;
+            }
+            if ((flagMode & 0x2) >= 0x2)
+            {
+                genRange = 2;
+            }
+            if ((flagMode & 0x1) >= 0x1)
+            {
+                genRange = 3;
+            }
+
+            Console.WriteLine(genRange);
+            Console.ReadKey();
+
+            //0 = blackjack; 1 = mixed pair; 2 = coloured pair; 3 = perfect pair
+            return random.Next(genRange) + 1;  //The +1 is an offset since Next() is exclusive
+        } 
     }
 }

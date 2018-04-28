@@ -61,16 +61,18 @@ namespace PayoutTester
         public static void PrintFooter()
         {
             string[] flags = new string[] {
+                (Program.flagSixToFive ? "[6t5]" : null),
                 (Program.flagDebug ? "[D]" : null),
                 (Program.flagEasyMode ? "[E]" : null),
+                "[M:" + Program.flagMode + "]",
                 (Program.flagWillPass ? "[P]" : null),
-                "[M:" + (Program.flagEasyMode ? "5" : Program.flagMin.ToString()) + "]",
+                "[S:" + (Program.flagEasyMode ? "5" : Program.flagMin.ToString()) + "]",
                 "[X:" + Program.flagMax + "]"
             };
 
             string flagBuilder = String.Join(" ", flags.Where(s => !String.IsNullOrEmpty(s)));
 
-            Console.SetCursorPosition(0, Console.WindowHeight -2);
+            Console.SetCursorPosition(0, Console.WindowHeight - 2);
             InterfaceHelper.WriteLine(String.Format("Flags: {0}", flagBuilder).TrimEnd(), ConsoleColor.DarkGray);
         }
     }
