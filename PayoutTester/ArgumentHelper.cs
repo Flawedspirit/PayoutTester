@@ -14,6 +14,11 @@ namespace PayoutTester
                     Program.flagSixToFive = true;
                 }
 
+                if (param.ToLower().Contains("-bjo"))
+                {
+                    Program.flagBlackjackOnly = true;
+                }
+
                 if (param.ToLower().Contains("-h") || param.ToLower().Contains("-help"))
                 {
                     PrintHelpScreen();
@@ -26,48 +31,15 @@ namespace PayoutTester
                     Program.flagDebug = true;
                 }
 
+                if (param.ToLower().Contains("-dd"))
+                {
+                    Program.flagVerboseDebug = true;
+                }
+
                 if (param.ToLower().Contains("-e") || param.ToLower().Contains("-easymode"))
 
                 {
                     Program.flagEasyMode = true;
-                }
-
-                if (param.ToLower().Contains("-m") || param.ToLower().Contains("-mode"))
-                {
-                    int modeParamIndex = Array.IndexOf(args, "-m");
-                    int modeToken;
-
-                    if (param.ToLower().Contains("-mode"))
-                    {
-                        modeParamIndex = Array.IndexOf(args, "-mode");
-                    }
-
-                    try
-                    {
-                        modeToken = Int32.Parse(args.GetValue(modeParamIndex + 1).ToString());
-
-                        if (modeToken < 1 || modeToken > 15)
-                        {
-                            throw new ArgumentOutOfRangeException();
-                        }
-
-                        Program.flagMode = modeToken;
-                    }
-                    catch (Exception ex)
-                    {
-                        if (ex is FormatException || ex is ArgumentNullException || ex is IndexOutOfRangeException)
-                        {
-                            InterfaceHelper.WriteLine("Mode must be a valid number. Press any key to close the program and correct the issue.", ConsoleColor.Red);
-                            Console.ReadKey();
-                            Environment.Exit(1);
-                        }
-                        else if (ex is ArgumentOutOfRangeException || ex is OverflowException)
-                        {
-                            InterfaceHelper.WriteLine("Mode must be between 1 and 15. Press any key to close the program and correct the issue.", ConsoleColor.Red);
-                            Console.ReadKey();
-                            Environment.Exit(4);
-                        }
-                    }
                 }
 
                 if (param.ToLower().Contains("-p") || param.ToLower().Contains("-pass"))
@@ -127,15 +99,32 @@ namespace PayoutTester
 
         private static void PrintHelpScreen()
         {
-            string optionString = "-6t5\t\t\tChanges blackjack payout to 6:5 payout mode.\n" +
-                "-d debug\t\tShow extra debugging information in-app.\n" +
-                "-e easymode\t\tGenerates bets that are divisible by 5 only. Overrides -min.\n" +
-                "-h help\t\t\tPrints this help screen.\n" +
-                "-o omit [bj|mp|cp|pp]\tSkip all blackjacks, mixed pairs, coloured pairs, and perfect pairs, respectively.\n" +
-                "-p pass\t\t\tAutomatically pass and generate a new bet on incorrect answers.\n" +
-                "-s min [number]\t\tSets the lower limit for the random number generation.\n" +
-                "-x max [number]\t\tSets the upper limit for the random number generation.\n";
-            Console.WriteLine("Usage: {0} {1}\n\nOptions:\n{2}", System.AppDomain.CurrentDomain.FriendlyName, "[-options]", optionString);
+            string optionString = "-6t5\t\tChanges blackjack payout to 6:5 payout mode.\n" +
+                "-bjo\t\tCauses the program to generate only blackjack payouts.\n" +
+                "-d debug\tShow extra debugging information in-app.\n" +
+                "-dd\t\tShow more verbose debugging information, including the answer.\n" +
+                "-e easymode\tGenerates bets that are divisible by 5 only. Overrides -min.\n" +
+                "-h help\t\tPrints this help screen.\n" +
+                "-p pass\t\tAutomatically pass and generate a new bet on incorrect answers.\n" +
+                "-s min [number]\tSets the lower limit for the random number generation.\n" +
+                "-x max [number]\tSets the upper limit for the random number generation.\n";
+
+            string debugHelpString = "If debug (-d) or verbose debug (-dd) mode is activated, a line of flags that are active will be shown\n" +
+                "on the bottom of the screen. These flags, from left to right, correspond to:\n\n" +
+                "[6t5]\t\tBlackjack payouts are calculated in 6:5 mode instead of 3:2.\n" +
+                "[B]\t\tOnly blackjack payouts are generated.\n" +
+                "[D]\t\tDebug or verbose debug mode is active.\n" +
+                "[E]\t\tEasy mode is on. All bets will be in multiples of 5 only.\n" +
+                "[P]\t\tA new bet will be generated on both correct and incorrect guesses.\n" +
+                "[S:n]\t\tIndicates the random number generator's lower limit.\n" +
+                "[X:n]\t\tIndicates the random number generator's upper limit.\n";
+
+            Console.WriteLine("Usage: {0} {1}\n\nOptions:\n{2}\n\nDebug Flags:\n{3}",
+                System.AppDomain.CurrentDomain.FriendlyName,
+                "[-options]",
+                optionString,
+                debugHelpString
+            );
         }
     }
 }

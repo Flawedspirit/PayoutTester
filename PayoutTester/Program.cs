@@ -14,10 +14,11 @@ namespace PayoutTester
 
         //Program Flags
         public static bool flagSixToFive = false;
+        public static bool flagBlackjackOnly = false;
         public static bool flagDebug = false;
+        public static bool flagVerboseDebug = false;
         public static bool flagEasyMode = false;
         public static bool flagWillPass = false;
-        public static int flagMode = 15;
         public static double flagMin = 2.00;
         public static double flagMax = 100.00;
 
@@ -60,8 +61,8 @@ namespace PayoutTester
                 switch (payoutType)
                 {
                     case 0:
-                        payout = thisBet * 1.5M;
-                        payoutStr = "blackjack (3:2)";
+                        payout = GenerateBlackjackPayout(thisBet);
+                        payoutStr = (flagSixToFive) ? "blackjack (6:5)" : "blackjack (3:2)";
                         break;
                     case 1:
                         payout = thisBet * 6M;
@@ -78,7 +79,7 @@ namespace PayoutTester
                         //end case
                 }
 
-                Console.WriteLine(String.Format("${0} bet, paying out a {1}. {2}", thisBet.ToString("N2"), payoutStr, (flagDebug) ? "Debug: " + payout : ""));
+                Console.WriteLine(String.Format("${0} bet, paying out a {1}. {2}", thisBet.ToString("N2"), payoutStr, (flagVerboseDebug) ? "Debug: " + payout : ""));
                 Console.WriteLine("");
 
                 Console.Write("Enter the expected payout: ");
@@ -135,26 +136,39 @@ namespace PayoutTester
 
         static int GeneratePayoutType()
         {
-            int genRange = 0;
-
-            if((flagMode & 0x4) >= 0x4)
-            {
-                genRange = 1;
-            }
-            if ((flagMode & 0x2) >= 0x2)
-            {
-                genRange = 2;
-            }
-            if ((flagMode & 0x1) >= 0x1)
-            {
-                genRange = 3;
-            }
-
-            Console.WriteLine(genRange);
-            Console.ReadKey();
-
             //0 = blackjack; 1 = mixed pair; 2 = coloured pair; 3 = perfect pair
-            return random.Next(genRange) + 1;  //The +1 is an offset since Next() is exclusive
-        } 
+            return (flagBlackjackOnly) ? 0 : random.Next(3) + 1;  //The +1 is an offset since Next() is max exclusive
+        }
+
+        static decimal GenerateBlackjackPayout(decimal bet)
+        {
+            if (flagSixToFive)
+            {
+                decimal remainder = bet % 5;
+
+                if (remainder != 0) bet -= remainder;
+
+                switch (remainder)
+                {
+                    case 1.0M:
+                        remainder = 1.25M;
+                        break;
+                    case 2.0M:
+                        remainder = 2.5M;
+                        break;
+                    case 3.0M:
+                        remainder = 3.75M;
+                        break;
+                    case 4.0M:
+                        remainder = 5.0M;
+                        break;
+                        //end case
+                }
+
+                return (remainder != 0) ? (bet * 1.2M) + remainder : bet * 1.2M;
+            }
+
+            return bet * 1.5M;
+        }
     }
 }

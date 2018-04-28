@@ -62,9 +62,9 @@ namespace PayoutTester
         {
             string[] flags = new string[] {
                 (Program.flagSixToFive ? "[6t5]" : null),
+                (Program.flagBlackjackOnly ? "[B]" : null),
                 (Program.flagDebug ? "[D]" : null),
                 (Program.flagEasyMode ? "[E]" : null),
-                "[M:" + Program.flagMode + "]",
                 (Program.flagWillPass ? "[P]" : null),
                 "[S:" + (Program.flagEasyMode ? "5" : Program.flagMin.ToString()) + "]",
                 "[X:" + Program.flagMax + "]"
