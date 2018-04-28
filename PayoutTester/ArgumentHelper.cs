@@ -17,6 +17,7 @@ namespace PayoutTester
                 if (param.ToLower().Contains("-h") || param.ToLower().Contains("-help"))
                 {
                     PrintHelpScreen();
+                    Console.Read();
                     Environment.Exit(0);
                 }
 
@@ -126,14 +127,14 @@ namespace PayoutTester
 
         private static void PrintHelpScreen()
         {
-            string optionString = "-6t5\t\tChanged blackjack payout to 6:5 payout mode.\n" +
-                "-d debug\tShow extra debugging information in-app.\n" +
-                "-e easymode\tGenerates bets that are divisible by 5 only. Overrides -min.\n" +
-                "-h help\t\tPrints this help screen.\n" +
-                "-m mode [number]\t\tSets the\n" +
-                "-p pass\t\tAutomatically pass and generate a new bet on incorrect answers.\n" +
-                "-s min [number]\tSets the lower limit for the random number generation.\n" +
-                "-x max [number]\tSets the upper limit for the random number generation.\n";
+            string optionString = "-6t5\t\t\tChanges blackjack payout to 6:5 payout mode.\n" +
+                "-d debug\t\tShow extra debugging information in-app.\n" +
+                "-e easymode\t\tGenerates bets that are divisible by 5 only. Overrides -min.\n" +
+                "-h help\t\t\tPrints this help screen.\n" +
+                "-o omit [bj|mp|cp|pp]\tSkip all blackjacks, mixed pairs, coloured pairs, and perfect pairs, respectively.\n" +
+                "-p pass\t\t\tAutomatically pass and generate a new bet on incorrect answers.\n" +
+                "-s min [number]\t\tSets the lower limit for the random number generation.\n" +
+                "-x max [number]\t\tSets the upper limit for the random number generation.\n";
             Console.WriteLine("Usage: {0} {1}\n\nOptions:\n{2}", System.AppDomain.CurrentDomain.FriendlyName, "[-options]", optionString);
         }
     }
