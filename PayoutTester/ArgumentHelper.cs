@@ -6,92 +6,115 @@ namespace PayoutTester
     {
         public static void ParseArguments(String[] args)
         {
-            foreach (string param in args)
+            if (args.Length > 0)
             {
-                if (param.ToLower().Contains("-6t5"))
+                foreach (string param in args)
                 {
-                    Program.flagSixToFive = true;
-                }
-
-                if (param.ToLower().Contains("-bjo"))
-                {
-                    Program.flagBlackjackOnly = true;
-                }
-
-                if (param.ToLower().Contains("-h") || param.ToLower().Contains("-help"))
-                {
-                    PrintHelpScreen();
-                    Environment.Exit(0);
-                }
-
-                if (param.ToLower().Contains("-d") || param.ToLower().Contains("-debug"))
-                {
-                    Program.flagDebug = true;
-                }
-
-                if (param.ToLower().Contains("-dd"))
-                {
-                    Program.flagVerboseDebug = true;
-                }
-
-                if (param.ToLower().Contains("-e") || param.ToLower().Contains("-easymode"))
-
-                {
-                    Program.flagEasyMode = true;
-                }
-
-                if (param.ToLower().Contains("-p") || param.ToLower().Contains("-pass"))
-                {
-                    Program.flagWillPass = true;
-                }
-
-                if (param.ToLower().Contains("-s") || param.ToLower().Contains("-min"))
-                {
-                    int minParamIndex = Array.IndexOf(args, "-s");
-
-                    if (param.ToLower().Contains("-min"))
-                    {
-                        minParamIndex = Array.IndexOf(args, "-min");
-                    }
-
                     try
                     {
-                        Program.flagMin = Double.Parse(args.GetValue(minParamIndex + 1).ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        if (ex is FormatException || ex is ArgumentNullException)
+                        if (param.ToLower().Equals("-6t5"))
                         {
-                            InterfaceHelper.WriteLine("Minimum bound must be a number. Press any key to close the program and correct the issue.", ConsoleColor.Red);
-                            Console.ReadKey();
-                            Environment.Exit(1);
+                            Program.flagSixToFive = true;
+                            continue;
                         }
+
+                        if (param.ToLower().Equals("-bjo"))
+                        {
+                            Program.flagBlackjackOnly = true;
+                            continue;
+                        }
+
+                        if (param.ToLower().Equals("-h") || param.ToLower().Equals("-help"))
+                        {
+                            PrintHelpScreen();
+                            Environment.Exit(0);
+                        }
+
+                        if (param.ToLower().Equals("-d") || param.ToLower().Equals("-debug"))
+                        {
+                            Program.flagDebug = true;
+                            continue;
+                        }
+
+                        if (param.ToLower().Equals("-dd"))
+                        {
+                            Program.flagVerboseDebug = true;
+                            continue;
+                        }
+
+                        if (param.ToLower().Equals("-e") || param.ToLower().Equals("-easymode"))
+
+                        {
+                            Program.flagEasyMode = true;
+                            continue;
+                        }
+
+                        if (param.ToLower().Equals("-p") || param.ToLower().Equals("-pass"))
+                        {
+                            Program.flagWillPass = true;
+                            continue;
+                        }
+
+                        if (param.ToLower().Equals("-s") || param.ToLower().Equals("-min"))
+                        {
+                            int minParamIndex = Array.IndexOf(args, "-s");
+
+                            if (param.ToLower().Contains("-min"))
+                            {
+                                minParamIndex = Array.IndexOf(args, "-min");
+                            }
+
+                            try
+                            {
+                                Program.flagMin = Double.Parse(args.GetValue(minParamIndex + 1).ToString());
+                                continue;
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex is FormatException || ex is ArgumentNullException)
+                                {
+                                    InterfaceHelper.WriteLine("Minimum bound must be a number. Press any key to close the program and correct the issue.", ConsoleColor.Red);
+                                    Console.ReadKey();
+                                    Environment.Exit(1);
+                                }
+                            }
+                        }
+
+                        if (param.ToLower().Equals("-x") || param.ToLower().Equals("-max"))
+                        {
+                            int maxParamIndex = Array.IndexOf(args, "-x");
+
+                            if (param.ToLower().Contains("-max"))
+                            {
+                                maxParamIndex = Array.IndexOf(args, "-max");
+                            }
+
+                            try
+                            {
+                                Program.flagMax = Double.Parse(args.GetValue(maxParamIndex + 1).ToString());
+                                continue;
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex is FormatException || ex is ArgumentNullException)
+                                {
+                                    InterfaceHelper.WriteLine("Maximum bound must be a number. Press any key to close the program and correct the issue.", ConsoleColor.Red);
+                                    Console.ReadKey();
+                                    Environment.Exit(2);
+                                }
+                            }
+                        }
+
+                        throw new ArgumentException("Invalid argument: " + param + ". Type -h or -help to see the help screen.");
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        InterfaceHelper.WriteLine(ex.ToString(), ConsoleColor.Red);
+                        Console.ReadKey();
+                        Environment.Exit(4);
                     }
                 }
 
-                if (param.ToLower().Contains("-x") || param.ToLower().Contains("-max"))
-                {
-                    int maxParamIndex = Array.IndexOf(args, "-x");
-
-                    if (param.ToLower().Contains("-max"))
-                    {
-                        maxParamIndex = Array.IndexOf(args, "-max");
-                    }
-
-                    try
-                    {
-                        Program.flagMax = Double.Parse(args.GetValue(maxParamIndex + 1).ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        if (ex is FormatException || ex is ArgumentNullException)
-                        {
-                            InterfaceHelper.WriteLine("Maximum bound must be a number. Press any key to close the program and correct the issue.", ConsoleColor.Red);
-                            Console.ReadKey();
-                            Environment.Exit(2);
-                        }
-                    }
-                }
             }
         }
 
