@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace PayoutTester
 {
@@ -22,7 +21,6 @@ namespace PayoutTester
                 if (param.ToLower().Contains("-h") || param.ToLower().Contains("-help"))
                 {
                     PrintHelpScreen();
-                    Console.Read();
                     Environment.Exit(0);
                 }
 
@@ -97,7 +95,7 @@ namespace PayoutTester
             }
         }
 
-        private static void PrintHelpScreen()
+        public static void PrintHelpScreen()
         {
             string optionString = "-6t5\t\tChanges blackjack payout to 6:5 payout mode.\n" +
                 "-bjo\t\tCauses the program to generate only blackjack payouts.\n" +
@@ -119,12 +117,20 @@ namespace PayoutTester
                 "[S:n]\t\tIndicates the random number generator's lower limit.\n" +
                 "[X:n]\t\tIndicates the random number generator's upper limit.\n";
 
-            Console.WriteLine("Usage: {0} {1}\n\nOptions:\n{2}\n\nDebug Flags:\n{3}",
+            string aboutString = "This program is licensed under the MIT License. Please see LICENSE in source for details.\n" +
+                "Source is available at https://github.com/Flawedspirit/PayoutTester.\n";
+
+            Console.WriteLine("Usage: {0} {1}\n\nOptions:\n{2}\nDebug Flags:\n{3}",
                 System.AppDomain.CurrentDomain.FriendlyName,
                 "[-options]",
                 optionString,
                 debugHelpString
             );
+
+            InterfaceHelper.Write("Payout Tester ", ConsoleColor.DarkCyan);
+            InterfaceHelper.Write(Program.VERSION + "\n\n");
+
+            Console.WriteLine(aboutString);
         }
     }
 }
