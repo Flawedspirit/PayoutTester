@@ -59,7 +59,7 @@ namespace PayoutTester
                         {
                             int minParamIndex = Array.IndexOf(args, "-s");
 
-                            if (param.ToLower().Contains("-min"))
+                            if (param.ToLower().Equals("-min"))
                             {
                                 minParamIndex = Array.IndexOf(args, "-min");
                             }
@@ -84,7 +84,7 @@ namespace PayoutTester
                         {
                             int maxParamIndex = Array.IndexOf(args, "-x");
 
-                            if (param.ToLower().Contains("-max"))
+                            if (param.ToLower().Equals("-max"))
                             {
                                 maxParamIndex = Array.IndexOf(args, "-max");
                             }
@@ -105,7 +105,15 @@ namespace PayoutTester
                             }
                         }
 
-                        throw new ArgumentException("Invalid argument: " + param + ". Type -h or -help to see the help screen.");
+                        if (Decimal.TryParse(param.ToString(), out decimal paramVal))
+                        {
+                            //If an argument is a number, skip over it because it is passed in by another argument and parsed there
+                            continue;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Invalid argument: " + param + ". Type -h or -help to see the help screen.");
+                        }
                     }
                     catch (ArgumentException ex)
                     {
