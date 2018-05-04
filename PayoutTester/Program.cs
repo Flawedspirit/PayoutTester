@@ -69,10 +69,14 @@ namespace PayoutTester
                         payoutStr = "mixed pair (6:1)";
                         break;
                     case 2:
+                        payout = thisBet * 7M;
+                        payoutStr = "2-pair super match (7:1)";
+                        break;
+                    case 3:
                         payout = thisBet * 12M;
                         payoutStr = "coloured pair (12:1)";
                         break;
-                    case 3:
+                    case 4:
                         payout = thisBet * 25M;
                         payoutStr = "perfect pair (25:1)";
                         break;
@@ -136,8 +140,8 @@ namespace PayoutTester
 
         static int GeneratePayoutType()
         {
-            //0 = blackjack; 1 = mixed pair; 2 = coloured pair; 3 = perfect pair
-            return (flagBlackjackOnly) ? 0 : random.Next(3) + 1;  //The +1 is an offset since Next() is max exclusive
+            //0 = blackjack; 1 = mixed pair; 2 = 2-pair super match; 3 = coloured pair; 4 = perfect pair
+            return (flagBlackjackOnly) ? 0 : random.Next(4) + 1;  //The +1 is an offset since Next() is max exclusive
         }
 
         static decimal GenerateBlackjackPayout(decimal bet)
