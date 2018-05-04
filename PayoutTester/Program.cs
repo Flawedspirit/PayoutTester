@@ -26,7 +26,7 @@ namespace PayoutTester
         public static int headerState = 0;
 
         //Objects
-        static Random random = new Random();
+        private static Random random = new Random();
 
         static void Main(string[] args)
         {
@@ -83,9 +83,11 @@ namespace PayoutTester
                         //end case
                 }
 
-                Console.WriteLine(String.Format("${0} bet, paying out a {1}. {2}", thisBet.ToString("N2"), payoutStr, (flagVerboseDebug) ? "Debug: " + payout : ""));
-                Console.WriteLine("");
+                Console.Write(String.Format("${0} bet, paying out a {1}.", thisBet.ToString("N2"), payoutStr));
 
+                if (flagVerboseDebug) InterfaceHelper.Write(" Debug: " + payout, ConsoleColor.DarkGray);
+
+                Console.WriteLine("\n");
                 Console.Write("Enter the expected payout: ");
 
                 try
@@ -129,7 +131,7 @@ namespace PayoutTester
             }
         }
 
-        static decimal GenerateBet()
+        private static decimal GenerateBet()
         {
             decimal randomBet = (decimal)(random.NextDouble() * (flagMax - flagMin) + flagMin);
 
@@ -138,13 +140,13 @@ namespace PayoutTester
             return Math.Ceiling((flagEasyMode) ? Math.Max(5 * Math.Floor(Math.Round(randomBet / 5)), 5) : randomBet);
         }
 
-        static int GeneratePayoutType()
+        private static int GeneratePayoutType()
         {
             //0 = blackjack; 1 = mixed pair; 2 = 2-pair super match; 3 = coloured pair; 4 = perfect pair
             return (flagBlackjackOnly) ? 0 : random.Next(4) + 1;  //The +1 is an offset since Next() is max exclusive
         }
 
-        static decimal GenerateBlackjackPayout(decimal bet)
+        private static decimal GenerateBlackjackPayout(decimal bet)
         {
             if (flagSixToFive)
             {
