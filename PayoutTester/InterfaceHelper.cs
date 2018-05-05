@@ -73,7 +73,7 @@ namespace PayoutTester
             string flagBuilder = String.Join(" ", flags.Where(s => !String.IsNullOrEmpty(s)));
 
             Console.SetCursorPosition(0, Console.WindowHeight - 2);
-            InterfaceHelper.WriteLine(String.Format("Flags: {0}", flagBuilder).TrimEnd(), ConsoleColor.DarkGray);
+            WriteLine(String.Format("Flags: {0}", flagBuilder).TrimEnd(), ConsoleColor.DarkGray);
         }
     }
 }

@@ -55,9 +55,9 @@ namespace PayoutTester
                             continue;
                         }
 
-                        if (param.ToLower().Equals("-s") || param.ToLower().Equals("-min"))
+                        if (param.ToLower().Equals("-m") || param.ToLower().Equals("-min"))
                         {
-                            int minParamIndex = Array.IndexOf(args, "-s");
+                            int minParamIndex = Array.IndexOf(args, "-m");
 
                             if (param.ToLower().Equals("-min"))
                             {
@@ -67,6 +67,12 @@ namespace PayoutTester
                             try
                             {
                                 Program.flagMin = Double.Parse(args.GetValue(minParamIndex + 1).ToString());
+
+                                if (Program.flagMin > Program.flagMax)
+                                {
+                                    throw new ArgumentOutOfRangeException();
+                                }
+
                                 continue;
                             }
                             catch (Exception ex)
@@ -74,9 +80,15 @@ namespace PayoutTester
                                 if (ex is FormatException || ex is ArgumentNullException)
                                 {
                                     InterfaceHelper.WriteLine("Minimum bound must be a number. Press any key to close the program and correct the issue.", ConsoleColor.Red);
-                                    Console.ReadKey();
-                                    Environment.Exit(1);
                                 }
+
+                                if(ex is ArgumentOutOfRangeException)
+                                {
+                                    InterfaceHelper.WriteLine("Minimum bound must be a lower than the maximum bound. Press any key to close the program and correct the issue.", ConsoleColor.Red);
+                                }
+
+                                Console.ReadKey();
+                                Environment.Exit(1);
                             }
                         }
 
@@ -92,6 +104,12 @@ namespace PayoutTester
                             try
                             {
                                 Program.flagMax = Double.Parse(args.GetValue(maxParamIndex + 1).ToString());
+
+                                if (Program.flagMax < Program.flagMin)
+                                {
+                                    throw new ArgumentOutOfRangeException();
+                                }
+
                                 continue;
                             }
                             catch (Exception ex)
@@ -99,9 +117,15 @@ namespace PayoutTester
                                 if (ex is FormatException || ex is ArgumentNullException)
                                 {
                                     InterfaceHelper.WriteLine("Maximum bound must be a number. Press any key to close the program and correct the issue.", ConsoleColor.Red);
-                                    Console.ReadKey();
-                                    Environment.Exit(2);
                                 }
+
+                                if (ex is ArgumentOutOfRangeException)
+                                {
+                                    InterfaceHelper.WriteLine("Maximum bound must be a greater than the minimum bound. Press any key to close the program and correct the issue.", ConsoleColor.Red);
+                                }
+
+                                Console.ReadKey();
+                                Environment.Exit(2);
                             }
                         }
 
@@ -112,12 +136,12 @@ namespace PayoutTester
                         }
                         else
                         {
-                            throw new ArgumentException("Invalid argument: " + param + ". Type -h or -help to see the help screen.");
+                            throw new ArgumentException();
                         }
                     }
-                    catch (ArgumentException ex)
+                    catch
                     {
-                        InterfaceHelper.WriteLine(ex.ToString(), ConsoleColor.Red);
+                        InterfaceHelper.WriteLine("Invalid argument: " + param + ". Type -h or -help to see the help screen.", ConsoleColor.Red);
                         Console.ReadKey();
                         Environment.Exit(4);
                     }
@@ -135,7 +159,7 @@ namespace PayoutTester
                 "-e easymode\tGenerates bets that are divisible by 5 only. Overrides -min.\n" +
                 "-h help\t\tPrints this help screen.\n" +
                 "-p pass\t\tAutomatically pass and generate a new bet on incorrect answers.\n" +
-                "-s min [number]\tSets the lower limit for the random number generation.\n" +
+                "-m min [number]\tSets the lower limit for the random number generation.\n" +
                 "-x max [number]\tSets the upper limit for the random number generation.\n";
 
             string debugHelpString = "If debug (-d) or verbose debug (-dd) mode is activated, a line of flags that are active will be shown\n" +
@@ -145,7 +169,7 @@ namespace PayoutTester
                 "[D]\t\tDebug or verbose debug mode is active.\n" +
                 "[E]\t\tEasy mode is on. All bets will be in multiples of 5 only.\n" +
                 "[P]\t\tA new bet will be generated on both correct and incorrect guesses.\n" +
-                "[S:n]\t\tIndicates the random number generator's lower limit.\n" +
+                "[M:n]\t\tIndicates the random number generator's lower limit.\n" +
                 "[X:n]\t\tIndicates the random number generator's upper limit.\n";
 
             string aboutString = "This program is licensed under the MIT License. Please see LICENSE in source for details.\n" +
