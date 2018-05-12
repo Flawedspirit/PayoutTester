@@ -26,7 +26,7 @@ namespace PayoutTester
             for (int i = 0; i < Console.WindowWidth; i++)
             {
                 Console.SetCursorPosition(i, Program.headerState);
-                Console.WriteLine("#");
+                WriteLine("#");
             }
 
             Program.headerState++;
@@ -34,7 +34,7 @@ namespace PayoutTester
             if (Program.headerState < 2)
             {
                 Console.SetCursorPosition(0, 1);
-                Console.Write("#");
+                Write("#");
 
                 Console.SetCursorPosition(2, 1);
                 Write("Payout Tester by Marc Chiarelli (c) " + DateTime.Now.Year, ConsoleColor.DarkCyan);
@@ -44,7 +44,7 @@ namespace PayoutTester
                 Console.ForegroundColor = ConsoleColor.White;
 
                 Console.SetCursorPosition(Console.WindowWidth - 1, 1);
-                Console.Write("#");
+                Write("#");
 
                 Program.headerState++;
             }
@@ -60,20 +60,32 @@ namespace PayoutTester
 
         public static void PrintFooter()
         {
-            string[] flags = new string[] {
-                (Program.flagSixToFive ? "[6t5]" : null),
-                (Program.flagBlackjackOnly ? "[B]" : null),
-                (Program.flagDebug ? "[D]" : null),
-                (Program.flagEasyMode ? "[E]" : null),
-                (Program.flagWillPass ? "[P]" : null),
-                "[S:" + (Program.flagEasyMode ? "5" : Program.flagMin.ToString()) + "]",
-                "[X:" + Program.flagMax + "]"
-            };
+            string flagBuilder = "";
 
-            string flagBuilder = String.Join(" ", flags.Where(s => !String.IsNullOrEmpty(s)));
+            if (Program.flagDebug)
+            {
+                string[] flags = new string[] {
+                    (Program.flagSixToFive ? "[6t5]" : null),
+                    (Program.flagBlackjackOnly ? "[B]" : null),
+                    (Program.flagDebug ? "[D]" : null),
+                    (Program.flagEasyMode ? "[E]" : null),
+                    (Program.flagWillPass ? "[P]" : null),
+                    "[S:" + (Program.flagEasyMode ? "5*" : Program.flagMin.ToString()) + "]",
+                    "[X:" + Program.flagMax + "]"
+                };
 
-            Console.SetCursorPosition(0, Console.WindowHeight - 2);
-            WriteLine(String.Format("Flags: {0}", flagBuilder).TrimEnd(), ConsoleColor.DarkGray);
+                flagBuilder = String.Join(" ", flags.Where(s => !String.IsNullOrEmpty(s)));
+                flagBuilder = String.Format("Flags: {0} ", flagBuilder);
+
+                Console.SetCursorPosition(0, Console.WindowHeight - 2);
+                WriteLine(flagBuilder, ConsoleColor.DarkGray);
+            }
+
+            Console.SetCursorPosition(flagBuilder.Length, Console.WindowHeight - 2);
+            Write("Correct/Incorrect guesses: ");
+            Write(Program.numCorrect.ToString(), ConsoleColor.Green);
+            Write(" / ");
+            Write(Program.numIncorrect.ToString() + " ", ConsoleColor.Red);
         }
     }
 }

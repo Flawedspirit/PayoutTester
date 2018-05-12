@@ -45,6 +45,7 @@ namespace PayoutTester
                         if (param.ToLower().Equals("-e") || param.ToLower().Equals("-easymode"))
 
                         {
+                            Program.flagMin = 5.00;
                             Program.flagEasyMode = true;
                             continue;
                         }
@@ -68,7 +69,7 @@ namespace PayoutTester
                             {
                                 Program.flagMin = Double.Parse(args.GetValue(minParamIndex + 1).ToString());
 
-                                if (Program.flagMin > Program.flagMax)
+                                if (Program.flagMin >= Program.flagMax)
                                 {
                                     throw new ArgumentOutOfRangeException();
                                 }
@@ -82,7 +83,7 @@ namespace PayoutTester
                                     InterfaceHelper.WriteLine("Minimum bound must be a number. Press any key to close the program and correct the issue.", ConsoleColor.Red);
                                 }
 
-                                if(ex is ArgumentOutOfRangeException)
+                                if (ex is ArgumentOutOfRangeException)
                                 {
                                     InterfaceHelper.WriteLine("Minimum bound must be a lower than the maximum bound. Press any key to close the program and correct the issue.", ConsoleColor.Red);
                                 }
@@ -105,7 +106,7 @@ namespace PayoutTester
                             {
                                 Program.flagMax = Double.Parse(args.GetValue(maxParamIndex + 1).ToString());
 
-                                if (Program.flagMax < Program.flagMin)
+                                if (Program.flagMax <= Program.flagMin)
                                 {
                                     throw new ArgumentOutOfRangeException();
                                 }
@@ -185,7 +186,7 @@ namespace PayoutTester
             InterfaceHelper.Write("Payout Tester ", ConsoleColor.DarkCyan);
             InterfaceHelper.Write(Program.VERSION + "\n\n");
 
-            Console.WriteLine(aboutString);
+            InterfaceHelper.WriteLine(aboutString);
         }
     }
 }

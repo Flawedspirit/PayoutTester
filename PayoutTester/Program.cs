@@ -19,17 +19,21 @@ namespace PayoutTester
         public static bool flagVerboseDebug = false;
         public static bool flagEasyMode = false;
         public static bool flagWillPass = false;
-        public static double flagMin = 2.00;
+        public static double flagMin = 1.00;
         public static double flagMax = 100.00;
 
         //Running State Variables
         public static int headerState = 0;
+        public static int numCorrect = 0;
+        public static int numIncorrect = 0;
 
         //Objects
         private static Random random = new Random();
 
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             ArgumentHelper.ParseArguments(args);
 
             decimal thisBet = GenerateBet();
@@ -47,15 +51,13 @@ namespace PayoutTester
                 Console.Clear();
 
                 InterfaceHelper.PrintHeader();
+                InterfaceHelper.PrintFooter();
 
-                if (flagDebug) InterfaceHelper.PrintFooter();
-
-                Console.SetCursorPosition(0, 4);
+                RenderChipsInPlay(thisBet);
 
                 if (wasCorrect)
                 {
-                    thisBet = GenerateBet();
-                    payoutType = GeneratePayoutType();
+                    Main(args);
                 }
 
                 switch (payoutType)
@@ -116,12 +118,14 @@ namespace PayoutTester
 
                 if (Decimal.Compare(payout, entry) == 0)
                 {
+                    numCorrect++;
                     InterfaceHelper.WriteLine("[\u221a] Correct! Press any key to do another one.", ConsoleColor.Green);
 
                     wasCorrect = true;
                 }
                 else
                 {
+                    numIncorrect++;
                     InterfaceHelper.WriteLine("[x]That was not correct. Press any key to try again.", ConsoleColor.Red);
 
                     wasCorrect = flagWillPass;
@@ -137,13 +141,21 @@ namespace PayoutTester
 
             //Return only numbers divisible by 5 when easymode flag is set
             //Otherwise, any number in the range is fair game
-            return Math.Ceiling((flagEasyMode) ? Math.Max(5 * Math.Floor(Math.Round(randomBet / 5)), 5) : randomBet);
+            return Math.Ceiling((flagEasyMode) ? Math.Max(5 * Math.Floor(Math.Round(randomBet / 5)), (decimal)flagMin) : randomBet);
         }
 
         private static int GeneratePayoutType()
         {
             //0 = blackjack; 1 = mixed pair; 2 = 2-pair super match; 3 = coloured pair; 4 = perfect pair
             return (flagBlackjackOnly) ? 0 : random.Next(4) + 1;  //The +1 is an offset since Next() is max exclusive
+        }
+
+        private static void RenderChipsInPlay(decimal bet)
+        {
+            Console.SetCursorPosition(0, 4);
+            Console.Write("Chips in play: ");
+            ChipDisplayHelper.DrawBetInChips(bet);
+            Console.SetCursorPosition(0, 6);
         }
 
         private static decimal GenerateBlackjackPayout(decimal bet)

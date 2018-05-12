@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentHelper.cs" />
+    <Compile Include="ChipDisplayHelper.cs" />
     <Compile Include="InterfaceHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
