@@ -1,43 +1,36 @@
 ﻿using System;
 using System.Linq;
 
-namespace PayoutTester
-{
-    class InterfaceHelper
-    {
-        public static void WriteLine(string print, ConsoleColor color = ConsoleColor.White)
-        {
+namespace PayoutTester {
+    class InterfaceHelper {
+        public static void WriteLine(string print, ConsoleColor color = ConsoleColor.White) {
             ConsoleColor prevColor = Console.ForegroundColor;
             Console.ForegroundColor = color;
             Console.WriteLine(print);
             Console.ForegroundColor = prevColor;
         }
 
-        public static void Write(string print, ConsoleColor color = ConsoleColor.White)
-        {
+        public static void Write(string print, ConsoleColor color = ConsoleColor.White) {
             ConsoleColor prevColor = Console.ForegroundColor;
             Console.ForegroundColor = color;
             Console.Write(print);
             Console.ForegroundColor = prevColor;
         }
 
-        public static void PrintHeader()
-        {
-            for (int i = 0; i < Console.WindowWidth; i++)
-            {
+        public static void PrintHeader() {
+            for (int i = 0; i < Console.WindowWidth; i++) {
                 Console.SetCursorPosition(i, Program.headerState);
                 WriteLine("#");
             }
 
             Program.headerState++;
 
-            if (Program.headerState < 2)
-            {
+            if (Program.headerState < 2) {
                 Console.SetCursorPosition(0, 1);
                 Write("#");
 
                 Console.SetCursorPosition(2, 1);
-                Write("Payout Tester by Marc Chiarelli (c) " + DateTime.Now.Year, ConsoleColor.DarkCyan);
+                Write("Payout Tester by Marc Chiarelli (c) 2018", ConsoleColor.DarkCyan);
 
                 Console.SetCursorPosition(Console.WindowWidth - ((Program.VERSION.Length) + 2), 1);
                 Write(Program.VERSION, ConsoleColor.DarkGray);
@@ -47,9 +40,7 @@ namespace PayoutTester
                 Write("#");
 
                 Program.headerState++;
-            }
-            else
-            {
+            } else {
                 Console.SetCursorPosition(0, Program.headerState + 1);
                 return;
             }
@@ -58,12 +49,10 @@ namespace PayoutTester
             Program.headerState = 0;
         }
 
-        public static void PrintFooter()
-        {
+        public static void PrintFooter() {
             string flagBuilder = "";
 
-            if (Program.flagDebug)
-            {
+            if (Program.flagDebug || Program.flagVerboseDebug) {
                 string[] flags = new string[] {
                     (Program.flagSixToFive ? "[6t5]" : null),
                     (Program.flagBlackjackOnly ? "[B]" : null),

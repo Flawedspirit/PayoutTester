@@ -2,12 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PayoutTester
-{
-    class ChipDisplayHelper
-    {
-        public static void DrawBetInChips(decimal bet)
-        {
+namespace PayoutTester {
+    class ChipDisplayHelper {
+        public static void DrawBetInChips(decimal bet) {
             //In order of $5000, $1000, $500, $100, $25, $5, $2.50, $1 values
             int[] numChips = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -26,18 +23,15 @@ namespace PayoutTester
             decimal remainder = 0;
             int index = 0;
 
-            foreach (Chip chip in chips)
-            {
+            foreach (Chip chip in chips) {
                 numChips[index] = Decimal.ToInt32(bet / chip.Value);
                 remainder = (numChips[index] > 0) ? bet %= chip.Value : bet;
                 index++;
             }
 
             index = 0;
-            foreach (Chip chip in chips)
-            {
-                for (int i = 0; i < numChips[index]; i++)
-                {
+            foreach (Chip chip in chips) {
+                for (int i = 0; i < numChips[index]; i++) {
                     InterfaceHelper.Write(chip.Icon, chip.Color);
                 }
 
@@ -45,19 +39,16 @@ namespace PayoutTester
             }
         }
 
-        private class Chip : IEnumerable<Chip>
-        {
+        private class Chip : IEnumerable<Chip> {
             public decimal Value { get; set; }
             public ConsoleColor Color { get; set; }
             public string Icon { get; set; }
 
-            public IEnumerator<Chip> GetEnumerator()
-            {
+            public IEnumerator<Chip> GetEnumerator() {
                 throw new NotImplementedException();
             }
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
+            IEnumerator IEnumerable.GetEnumerator() {
                 throw new NotImplementedException();
             }
         }
