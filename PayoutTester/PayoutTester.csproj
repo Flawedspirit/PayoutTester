@@ -52,7 +52,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>keypair.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>keypair.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -76,9 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="keyfile.pfx" />
-    <None Include="keypair.snk" />
-    <None Include="public.snk" />
+    <None Include="keypair.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ChipIconLarge.ico" />
